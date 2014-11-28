@@ -1,4 +1,4 @@
-/* THIS IS A TEST */
+
 #include "iDroid.h"
 
 iDroid::iDroid() : _versions(), _appsByIDtree(), _appsByDLtree(), _max() {
@@ -51,6 +51,10 @@ StatusType iDroid::RemoveApplication(int appID) {
 		DataByDowns appByDowns(appByID);
 		_appsByDLtree.remove(appByDowns);
 
+		if(_max == appByDowns) {
+			_max = _appsByDLtree.getMax()->getData();
+		}
+
 		int version = appByID._versionCode;
 		List<Version>::Iterator it = _versions.find(version);
 		assert(it != _versions.end());
@@ -84,11 +88,16 @@ void iDroid::updateMax(DataByDowns& old) {
 }
 
 StatusType iDroid::IncreaseDownloads(int appID, int downloadIncrease) {
-	if ( appID <= 0 ) return INVALID_INPUT;
+	if ( appID <= 0 || downloadIncrease <= 0 ) return INVALID_INPUT;
 	try {
 		DataByID appByID(appID);
 		Tree<DataByID>::Node* node = _appsByIDtree.find(appByID);
-
+		appByID = node->getData();
+		StatusType status = RemoveApplication(appID);
+		if(status != SUCCESS) return status;
+		appByID._downloads += downloadIncrease;
+		status = AddApplication(appID, appByID._versionCode , appByID._downloads);
+		if(status != SUCCESS) return status;
 	} catch(Tree<DataByID>::ElementNotFound& e) {
 		return FAILURE;
 	} catch(Tree<DataByDowns>::ElementNotFound& e) {

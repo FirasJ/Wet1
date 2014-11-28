@@ -42,6 +42,7 @@ class Version {
 public:
 	Version() : _versionID(0), _appsByIDtree(), _appsByDLtree(), _max() {}
 	Version(int versionID) : _versionID(versionID), _appsByIDtree(), _appsByDLtree(), _max() {}
+	bool operator ==(const Version& version) {	return version._versionID == _versionID;	}
 	int getId() const {	return _versionID;	}
 	friend class iDroid;
 private:
