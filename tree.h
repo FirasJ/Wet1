@@ -106,7 +106,7 @@ private:
 };
 
 template<class T>
-Tree<T>::Tree() :	_root(0)	{}
+Tree<T>::Tree() :	_root(0), _size(0) {}
 
 template<class T>
 void Tree<T>::clear(Node* node) {

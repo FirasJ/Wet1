@@ -32,6 +32,11 @@ public:
 	bool operator !=(const DataByDowns& data) {	return !(*this == data);	}
 	friend bool operator <(const DataByDowns& data1, const DataByDowns& data2);
 	friend bool operator >(const DataByDowns& data1, const DataByDowns& data2);
+
+	int getAppId() const {
+		return _appID;
+	}
+
 	friend class iDroid;
 	friend class DataByID;
 private:

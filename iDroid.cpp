@@ -157,9 +157,31 @@ StatusType iDroid::GetAllAppsByDownloads(int versionCode, int** apps, int* numOf
 	}
 }
 
+class TreeToArray {
+	int** apps;
+	int* numOfApps;
+	int index;
+public:
+	TreeToArray(int** apps, int* numOfApps) : apps(apps), numOfApps(numOfApps), index(*numOfApps-1) {}
+	void operator()(const DataByDowns& data) {
+		(*apps)[index] = data.getAppId();
+		--index;
+	}
+};
+
 StatusType iDroid::getAllApps(const Tree<DataByDowns>& tree, int** apps, int* numOfApps) {
 	assert(apps && numOfApps);
-
+	*numOfApps = tree.size();
+	if(tree.size() == 0) {
+		*apps = NULL;
+		return SUCCESS;
+	}
+	*apps = (int*)malloc(sizeof(int)*tree.size());
+	if(!*apps) {
+		return ALLOCATION_ERROR;
+	}
+	TreeToArray convert(apps, numOfApps);
+	tree.inOrder(convert);
 	return SUCCESS;
 }
 
