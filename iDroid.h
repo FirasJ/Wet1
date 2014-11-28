@@ -74,8 +74,8 @@ private:
 	Tree<DataByDowns> _appsByDLtree;
 	DataByDowns _max;
 
-	DataByDowns& getMax(Tree<DataByDowns>& tree);
-	void getAllApps(Tree<DataByDowns>& tree, int** apps, int* numOfApps);
+	DataByDowns getMax(Tree<DataByDowns>& tree);
+	StatusType getAllApps(const Tree<DataByDowns>& tree, int** apps, int* numOfApps);
 };
 
 #endif /* IDROID_H_ */
