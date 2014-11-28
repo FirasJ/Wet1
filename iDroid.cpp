@@ -1,6 +1,9 @@
 
 #include "iDroid.h"
 
+#define CMP_DATA(node, appID) if(node->getData()._appID != appID) return FAILURE
+
+
 iDroid::iDroid() : _versions(), _appsByIDtree(), _appsByDLtree(), _max() {
 }
 
@@ -46,6 +49,7 @@ StatusType iDroid::RemoveApplication(int appID) {
 	try {
 		DataByID appByID(appID);
 		Tree<DataByID>::Node* node = _appsByIDtree.find(appByID);
+		CMP_DATA(node, appID);
 		appByID = node->getData();
 		_appsByIDtree.remove(appByID);
 		DataByDowns appByDowns(appByID);
@@ -81,15 +85,16 @@ StatusType iDroid::IncreaseDownloads(int appID, int downloadIncrease) {
 	try {
 		DataByID appByID(appID);
 		Tree<DataByID>::Node* node = _appsByIDtree.find(appByID);
+		CMP_DATA(node, appID);
 		appByID = node->getData();
 		StatusType status = RemoveApplication(appID);
 		if(status != SUCCESS) return status;
 		appByID._downloads += downloadIncrease;
 		status = AddApplication(appID, appByID._versionCode , appByID._downloads);
 		if(status != SUCCESS) return status;
-	} catch(Tree<DataByID>::ElementNotFound& e) {
+	} catch(Tree<DataByID>::TreeIsEmpty& e) {
 		return FAILURE;
-	} catch(Tree<DataByDowns>::ElementNotFound& e) {
+	} catch(Tree<DataByDowns>::TreeIsEmpty& e) {
 		return FAILURE;
 	}
 	return SUCCESS;
@@ -100,9 +105,7 @@ StatusType iDroid::UpgradeApplication(int appID) {
 	try {
 		DataByID appByID(appID);
 		Tree<DataByID>::Node* node = _appsByIDtree.find(appByID);
-		if(node->getData()._appID != appID) { // element not found
-			return FAILURE;
-		}
+		CMP_DATA(node, appID);
 		Version version(node->getData()._versionCode);
 		List<Version>::Iterator it = _versions.find(version);
 
