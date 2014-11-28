@@ -56,7 +56,7 @@ StatusType iDroid::RemoveApplication(int appID) {
 		}
 
 		int version = appByID._versionCode;
-		List<Version>::Iterator it = _versions.find(version);
+		List<Version>::Iterator it = _versions.find(Version(version));
 		assert(it != _versions.end());
 		it->_appsByIDtree.remove(appByID);
 		it->_appsByDLtree.remove(appByDowns);
