@@ -44,7 +44,7 @@ int mainDroid() {
 	return 0;
 }
 
-int main() {
+int mainTree() {
 	Tree<double> tree;
 //	int x[10];
 	for (int i = 0; i < 10; ++i) {

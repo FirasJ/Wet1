@@ -25,7 +25,7 @@ public:
 	virtual void remove(const T& data);
 	virtual Node* find(const T& data) const;
 	Node* getMax() const;
-	void clear(Node* node=_root);
+	void clear(Node* node);
 	size_t size() const;
 
 	template<class Function>
