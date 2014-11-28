@@ -71,7 +71,7 @@ StatusType iDroid::RemoveApplication(int appID) {
 	}
 	return SUCCESS;
 }
-
+/*hi*/
 StatusType iDroid::IncreaseDownloads(int appID, int downloadIncrease) {
 	if ( appID <= 0 ) return INVALID_INPUT;
 	try {
