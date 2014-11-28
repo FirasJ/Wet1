@@ -60,7 +60,8 @@ StatusType iDroid::RemoveApplication(int appID) {
 		assert(it != _versions.end());
 		it->_appsByIDtree.remove(appByID);
 		it->_appsByDLtree.remove(appByDowns);
-		updateMax(appByDowns);
+		_max = getMax(_appsByDLtree);
+		it->_max = getMax(it->_appsByDLtree);
 	} catch(Tree<DataByID>::TreeIsEmpty& e) {
 		return FAILURE;
 	} catch(Tree<DataByID>::ElementNotFound& e) {
@@ -71,19 +72,11 @@ StatusType iDroid::RemoveApplication(int appID) {
 	return SUCCESS;
 }
 
-void iDroid::updateMax(DataByDowns& old) {
+DataByDowns& iDroid::getMax(Tree<DataByDowns>& tree) {
 	try {
-		if(_max == old) {
-			_max = _appsByDLtree.getMax()->getData();
-		}
-		int version = old._versionCode;
-		List<Version>::Iterator it = _versions.find(version);
-		assert(it != _versions.end());
-		if(it->_max == old) {
-			it->_max = it->_appsByDLtree.getMax()->getData();
-		}
+		return tree.getMax()->getData();
 	} catch (Tree<DataByDowns>::TreeIsEmpty& e) {
-		return;
+		return DataByDowns();
 	}
 }
 
