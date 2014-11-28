@@ -113,12 +113,21 @@ StatusType iDroid::UpgradeApplication(int appID) {
 }
 
 StatusType iDroid::GetTopApp(int versionCode, int* appID) {
-	if(versionCode < 0) {
-
+	*appID = 1;
+	if(versionCode == 0 || !appID) {
+		return INVALID_INPUT;
+	} else if(versionCode < 0) {
+		if(_max._appID <= 0) { // uninitialized max
+			return FAILURE;
+		}
+		*appID = _max._appID;
 		return SUCCESS;
 	}
-	List<Version>::Iterator it = _versions.find(versionCode);
-
+	List<Version>::Iterator it = _versions.find(Version(versionCode));
+	if(it == _versions.end() || it->_max._appID == 0) {
+		return FAILURE;
+	}
+	*appID = it->_max._appID;
 	return SUCCESS;
 }
 
