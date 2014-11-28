@@ -46,9 +46,6 @@ StatusType iDroid::RemoveApplication(int appID) {
 	try {
 		DataByID appByID(appID);
 		Tree<DataByID>::Node* node = _appsByIDtree.find(appByID);
-		//if(appByID != node->getData()) {
-		//	return FAILURE;
-		//}
 		appByID = node->getData();
 		_appsByIDtree.remove(appByID);
 		DataByDowns appByDowns(appByID);
