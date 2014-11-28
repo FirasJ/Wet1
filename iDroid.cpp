@@ -265,9 +265,9 @@ StatusType iDroid::UpdateDownloads(int groupBase, int multiplyFactor) {
 
 	UpdateDL updateDL(groupBase, multiplyFactor);
 	_appsByIDtree.inOrder(updateDL);
-	List<DataByDowns> list1(), list2(), allElements();
-	PredicateTree prediacteTree(&list1, &list2, groupBase, multiplyFactor);
-	_appsByDLtree.inOrder(prediacteTree);
+	List<DataByDowns> list1, list2, allElements;
+	PredicateTree predicateTree(&list1, &list2, groupBase, multiplyFactor);
+	_appsByDLtree.inOrder(predicateTree);
 
 
 	return SUCCESS;
