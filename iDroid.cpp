@@ -127,18 +127,18 @@ StatusType iDroid::UpgradeApplication(int appID) {
 }
 
 StatusType iDroid::GetTopApp(int versionCode, int* appID) {
-	*appID = 1;
+	*appID = -1;
 	if(versionCode == 0 || !appID) {
 		return INVALID_INPUT;
 	} else if(versionCode < 0) {
-		if(_max._appID <= 0) { // uninitialized max
-			return FAILURE;
-		}
+		/*if(_max._appID <= 0) { // empty
+			return SUCCESS;
+		}*/
 		*appID = _max._appID;
 		return SUCCESS;
 	}
 	List<Version>::Iterator it = _versions.find(Version(versionCode));
-	if(it == _versions.end() || it->_max._appID == 0) {
+	if(it == _versions.end()) {
 		return FAILURE;
 	}
 	*appID = it->_max._appID;
@@ -196,16 +196,17 @@ iDroid::~iDroid() {
 }
 
 bool operator <(const DataByID& data1, const DataByID& data2) {
-	if (data1._appID < data2._appID) return true;
-	return false;
-}
-
-bool operator >(const DataByID& data1, const DataByID& data2) {
 	if (data1._appID > data2._appID) return true;
 	return false;
 }
 
+bool operator >(const DataByID& data1, const DataByID& data2) {
+	if (data1._appID < data2._appID) return true;
+	return false;
+}
+
 bool operator <(const DataByDowns& data1, const DataByDowns& data2) {
+	if (data1._downloads < data2._downloads) return true;
 	if (data1._downloads == data2._downloads) {
 		if (data1._appID > data2._appID)  {
 			return true;
@@ -213,11 +214,11 @@ bool operator <(const DataByDowns& data1, const DataByDowns& data2) {
 			return false;
 		}
 	}
-	if (data1._downloads < data2._downloads) return true;
 	return false;
 }
 
 bool operator >(const DataByDowns& data1, const DataByDowns& data2) {
+	if (data1._downloads > data2._downloads) return true;
 	if (data1._downloads == data2._downloads) {
 		if (data1._appID < data2._appID) {
 			return true;
@@ -225,6 +226,5 @@ bool operator >(const DataByDowns& data1, const DataByDowns& data2) {
 			return false;
 		}
 	}
-	if (data1._downloads > data2._downloads) return true;
 	return false;
 }

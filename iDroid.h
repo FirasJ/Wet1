@@ -8,10 +8,9 @@
 
 class DataByID {
 public:
-	DataByID() : _appID(0), _downloads(-1), _versionCode(0) {}
-	DataByID(const DataByID& data) : _appID(data._appID), _downloads(data._downloads), _versionCode(data._versionCode) {}
-//	DataByID(const DataByDowns& data) : _appID(data._appID), _downloads(data._downloads), _versionCode(data._versionCode) {}
-	DataByID(int id, int downloads=-1, int versionCode=-1) : _appID(id), _downloads(downloads), _versionCode(versionCode) {}
+	DataByID() : _appID(-1), _versionCode(-1), _downloads(-1) {}
+	DataByID(const DataByID& data) : _appID(data._appID), _versionCode(data._versionCode), _downloads(data._downloads) {}
+	DataByID(int id, int versionCode=-1, int downloads=-1) : _appID(id), _versionCode(versionCode) , _downloads(downloads){}
 	bool operator ==(const DataByID& data) {	return (data._appID == _appID);	}
 	bool operator !=(const DataByID& data) {	return !(*this == data);	}
 	friend bool operator <(const DataByID& data1, const DataByID& data2);
@@ -19,15 +18,15 @@ public:
 	friend class iDroid;
 	friend class DataByDowns;
 private:
-	int _appID, _downloads, _versionCode;
+	int _appID, _versionCode, _downloads;
 };
 
 class DataByDowns {
 public:
-	DataByDowns() : _appID(0), _downloads(-1), _versionCode(0) {}
-	DataByDowns(int id, int downloads, int versionCode) : _appID(id), _downloads(downloads), _versionCode(versionCode) {}
-	DataByDowns(const DataByDowns& data) : _appID(data._appID), _downloads(data._downloads), _versionCode(data._versionCode) {}
-	DataByDowns(const DataByID& data) : _appID(data._appID), _downloads(data._downloads), _versionCode(data._versionCode) {}
+	DataByDowns() : _appID(-1), _versionCode(-1), _downloads(-1) {}
+	DataByDowns(int id, int versionCode, int downloads) : _appID(id), _versionCode(versionCode), _downloads(downloads) {}
+	DataByDowns(const DataByDowns& data) : _appID(data._appID), _versionCode(data._versionCode), _downloads(data._downloads) {}
+	DataByDowns(const DataByID& data) : _appID(data._appID), _versionCode(data._versionCode), _downloads(data._downloads) {}
 	bool operator ==(const DataByDowns& data) {	return (data._appID == _appID);	}
 	bool operator !=(const DataByDowns& data) {	return !(*this == data);	}
 	friend bool operator <(const DataByDowns& data1, const DataByDowns& data2);
@@ -40,7 +39,7 @@ public:
 	friend class iDroid;
 	friend class DataByID;
 private:
-	int _appID, _downloads, _versionCode;
+	int _appID, _versionCode, _downloads;
 };
 
 class Version {

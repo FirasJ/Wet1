@@ -52,4 +52,5 @@ StatusType UpdateDownloads(void *DS, int groupBase, int multiplyFactor) {
 void Quit(void** DS) {
 	if ( !DS || !*DS ) return;
 	delete (iDroid*)*DS;
+	*DS = NULL;
 }
