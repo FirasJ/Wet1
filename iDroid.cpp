@@ -274,13 +274,6 @@ void updateTrees(int groupBase, int multiplyFactor, Tree<DataByID>& appsByIDtree
 StatusType iDroid::UpdateDownloads(int groupBase, int multiplyFactor) {
 	if ( groupBase < 1 || multiplyFactor <= 0 ) return INVALID_INPUT;
 
-
-	UpdateDL updateDL(groupBase, multiplyFactor);
-	_appsByIDtree.inOrder(updateDL);
-	List<DataByDowns> list1, list2, allElements;
-	PredicateTree predicateTree(&list1, &list2, groupBase, multiplyFactor);
-	_appsByDLtree.inOrder(predicateTree);
-
 	updateTrees(groupBase, multiplyFactor, _appsByIDtree, _appsByDLtree);
 	_max = getMax(_appsByDLtree);
 
