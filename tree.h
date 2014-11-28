@@ -155,11 +155,8 @@ void Tree<T>::insert(const T& data) {
 template<class T>
 typename Tree<T>::Node* Tree<T>::getMax() const {
 	Node* max = _root;
-	if(!max || (!max->_right && !max->_left)) { // tree is empty or only has 1 node
-		return _root;
-	}
-	if(!max->_right) {
-		return max->_left;
+	if(!max) {
+		throw TreeIsEmpty();
 	}
 	while(max->_right) {
 		max = max->_right;

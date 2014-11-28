@@ -50,18 +50,13 @@ StatusType iDroid::RemoveApplication(int appID) {
 		_appsByIDtree.remove(appByID);
 		DataByDowns appByDowns(appByID);
 		_appsByDLtree.remove(appByDowns);
-		if(_max == appByDowns) {
-			_max = _appsByDLtree.getMax()->getData();
-		}
 
 		int version = appByID._versionCode;
 		List<Version>::Iterator it = _versions.find(version);
 		assert(it != _versions.end());
 		it->_appsByIDtree.remove(appByID);
 		it->_appsByDLtree.remove(appByDowns);
-		if(it->_max == appByDowns) {
-			it->_max = it->_appsByDLtree.getMax()->getData();
-		}
+		updateMax(appByDowns);
 	} catch(Tree<DataByID>::TreeIsEmpty& e) {
 		return FAILURE;
 	} catch(Tree<DataByID>::ElementNotFound& e) {
@@ -71,7 +66,23 @@ StatusType iDroid::RemoveApplication(int appID) {
 	}
 	return SUCCESS;
 }
-/*hi*/
+
+void iDroid::updateMax(DataByDowns& old) {
+	try {
+		if(_max == old) {
+			_max = _appsByDLtree.getMax()->getData();
+		}
+		int version = old._versionCode;
+		List<Version>::Iterator it = _versions.find(version);
+		assert(it != _versions.end());
+		if(it->_max == old) {
+			it->_max = it->_appsByDLtree.getMax()->getData();
+		}
+	} catch (Tree<DataByDowns>::TreeIsEmpty& e) {
+		return;
+	}
+}
+
 StatusType iDroid::IncreaseDownloads(int appID, int downloadIncrease) {
 	if ( appID <= 0 ) return INVALID_INPUT;
 	try {
@@ -91,6 +102,12 @@ StatusType iDroid::UpgradeApplication(int appID) {
 }
 
 StatusType iDroid::GetTopApp(int versionCode, int* appID) {
+	if(versionCode < 0) {
+
+		return SUCCESS;
+	}
+	List<Version>::Iterator it = _versions.find(versionCode);
+
 	return SUCCESS;
 }
 
