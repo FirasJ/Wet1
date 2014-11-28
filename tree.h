@@ -26,6 +26,7 @@ public:
 	virtual Node* find(const T& data) const;
 	Node* getMax() const;
 	void clear(Node* node);
+	size_t size() const;
 
 	template<class Function>
 	void preOrder(Function& function);
@@ -40,6 +41,7 @@ public:
 private:
 
 	Node *_root;
+	size_t _size;
 
 	template<class Function>
 	void subPreOrder(const Node* node, Function& function);
@@ -127,6 +129,7 @@ void Tree<T>::insert(const T& data) {
 		if(parent->_data == data) {
 			throw ElementAlreadyExists();
 		}
+		++_size;
 		newNode->_parent = parent;
 		if(data < parent->_data) {
 			parent->_left = newNode;
@@ -148,6 +151,7 @@ void Tree<T>::insert(const T& data) {
 		}
 	} catch (TreeIsEmpty& e) {
 		_root = newNode;
+		++_size;
 	}
 
 }
@@ -162,6 +166,11 @@ typename Tree<T>::Node* Tree<T>::getMax() const {
 		max = max->_right;
 	}
 	return max;
+}
+
+template<class T>
+inline size_t Tree<T>::size() const {
+	return _size;
 }
 
 /*
@@ -216,6 +225,7 @@ void Tree<T>::remove(const T& data) {
 		}
 		parent = parent->_parent;
 	}
+	--_size;
 	delete node;
 }
 

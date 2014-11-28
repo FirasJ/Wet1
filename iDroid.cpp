@@ -157,23 +157,6 @@ StatusType iDroid::GetAllAppsByDownloads(int versionCode, int** apps, int* numOf
 	}
 }
 
-template<class T>
-class TreeSize {
-public:
-	size_t counter;
-	TreeSize() : counter(0) {}
-	void operator()(const T& t) {
-		++counter;
-	}
-};
-
-template<class T>
-size_t treeSize(const Tree<T>& tree) {
-	TreeSize<T> size;
-	tree.inOrder(size);
-	return size.counter;
-}
-
 StatusType iDroid::getAllApps(const Tree<DataByDowns>& tree, int** apps, int* numOfApps) {
 	assert(apps && numOfApps);
 
