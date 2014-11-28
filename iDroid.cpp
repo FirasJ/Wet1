@@ -192,7 +192,7 @@ StatusType iDroid::getAllApps(const Tree<DataByDowns>& tree, int** apps, int* nu
 void mergeLists(const List<DataByDowns>& list1, const List<DataByDowns>& list2, List<DataByDowns>& newList) {
 	List<DataByDowns>::Iterator it1 = list1.begin();
 	List<DataByDowns>::Iterator it2 = list2.begin();
-	while ( it1 != list1.end() || it2 != list2.end() ) {
+	while ( it1 != list1.end() && it2 != list2.end() ) {
 		if(*it1 < *it2) {
 			newList.insert(*it1);
 			++it1;
@@ -219,10 +219,10 @@ void mergeLists(const List<DataByDowns>& list1, const List<DataByDowns>& list2, 
 
 class FillTree {
 public:
-	FillTree(const List<DataByDowns> list) : _current(list.begin()) {}
+	FillTree(const List<DataByDowns>& list) : _current(list.begin()) {}
 	void operator()(DataByDowns& data) {
-		data = *_current;
-		++_current;
+			data = *_current;
+			++_current;
 	}
 private:
 	List<DataByDowns>::Iterator _current;
