@@ -260,8 +260,20 @@ private:
 	int _groupBase, _multiplyFactor;
 };
 
+void updateTrees(int groupBase, int multiplyFactor, Tree<DataByID>& appsByIDtree, Tree<DataByDowns>& appsByDLtree) {
+	UpdateDL updateDL(groupBase, multiplyFactor);
+	appsByIDtree.inOrder(updateDL);
+	List<DataByDowns> list1, list2, allElements;
+	PredicateTree prediacteTree(&list1, &list2, groupBase, multiplyFactor);
+	appsByDLtree.inOrder(prediacteTree);
+	mergeLists(list1, list2, allElements);
+	FillTree fillTree(allElements);
+	appsByDLtree.inOrder(fillTree);
+}
+
 StatusType iDroid::UpdateDownloads(int groupBase, int multiplyFactor) {
 	if ( groupBase < 1 || multiplyFactor <= 0 ) return INVALID_INPUT;
+
 
 	UpdateDL updateDL(groupBase, multiplyFactor);
 	_appsByIDtree.inOrder(updateDL);
@@ -269,6 +281,13 @@ StatusType iDroid::UpdateDownloads(int groupBase, int multiplyFactor) {
 	PredicateTree predicateTree(&list1, &list2, groupBase, multiplyFactor);
 	_appsByDLtree.inOrder(predicateTree);
 
+	updateTrees(groupBase, multiplyFactor, _appsByIDtree, _appsByDLtree);
+	_max = getMax(_appsByDLtree);
+
+	for(List<Version>::Iterator it = _versions.begin(); it != _versions.end(); ++it) {
+		updateTrees(groupBase, multiplyFactor, it->_appsByIDtree, it->_appsByDLtree);
+		it->_max = getMax(it->_appsByDLtree);
+	}
 
 	return SUCCESS;
 }
