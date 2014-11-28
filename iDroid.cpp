@@ -46,9 +46,9 @@ StatusType iDroid::RemoveApplication(int appID) {
 	try {
 		DataByID appByID(appID);
 		Tree<DataByID>::Node* node = _appsByIDtree.find(appByID);
-		if(appByID != node->getData()) {
-			return FAILURE;
-		}
+		//if(appByID != node->getData()) {
+		//	return FAILURE;
+		//}
 		appByID = node->getData();
 		_appsByIDtree.remove(appByID);
 		DataByDowns appByDowns(appByID);
@@ -69,13 +69,23 @@ StatusType iDroid::RemoveApplication(int appID) {
 		return FAILURE;
 	} catch(Tree<DataByID>::ElementNotFound& e) {
 		return FAILURE;
-	} catch(...) {
-
+	} catch(Tree<DataByDowns>::ElementNotFound& e) {
+		return FAILURE;
 	}
 	return SUCCESS;
 }
 
 StatusType iDroid::IncreaseDownloads(int appID, int downloadIncrease) {
+	if ( appID <= 0 ) return INVALID_INPUT;
+	try {
+		DataByID appByID(appID);
+		Tree<DataByID>::Node* node = _appsByIDtree.find(appByID);
+
+	} catch(Tree<DataByID>::ElementNotFound& e) {
+		return FAILURE;
+	} catch(Tree<DataByDowns>::ElementNotFound& e) {
+		return FAILURE;
+	}
 	return SUCCESS;
 }
 
