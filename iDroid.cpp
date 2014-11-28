@@ -104,7 +104,18 @@ StatusType iDroid::UpgradeApplication(int appID) {
 	try {
 		DataByID appByID(appID);
 		Tree<DataByID>::Node* node = _appsByIDtree.find(appByID);
+		Version version(node->getData()._versionCode);
+		List<Version>::Iterator it = _versions.find(version);
+		if ( ++it == _versions.end() ) return FAILURE;
+		it = _versions.find(version);
+
 		appByID = node->getData();
+		DataByDowns appByDowns(appByID);
+
+		StatusType status = RemoveApplication(appID);
+		if(status != SUCCESS) return status;
+		status = AddApplication(appID, it->_versionID , appByID._downloads);
+		if(status != SUCCESS) return status;
 
 	}  catch(Tree<DataByID>::ElementNotFound& e) {
 		return FAILURE;
