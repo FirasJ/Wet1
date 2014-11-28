@@ -25,7 +25,7 @@ public:
 	virtual void remove(const T& data);
 	virtual Node* find(const T& data) const;
 	Node* getMax() const;
-	void clear(Node* node);
+	void clear(Node* node=_root);
 	size_t size() const;
 
 	template<class Function>
@@ -114,6 +114,7 @@ void Tree<T>::clear(Node* node) {
     if(node->_left) clear(node->_left);
     if(node->_right) clear(node->_right);
     delete node;
+    --_size;
 }
 
 template<class T>
