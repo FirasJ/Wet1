@@ -74,7 +74,8 @@ private:
 	Tree<DataByDowns> _appsByDLtree;
 	DataByDowns _max;
 
-	DataByDowns& iDroid::getMax(Tree<DataByDowns>& tree);
+	DataByDowns& getMax(Tree<DataByDowns>& tree);
+	void getAllApps(Tree<DataByDowns>& tree, int** apps, int* numOfApps);
 };
 
 #endif /* IDROID_H_ */

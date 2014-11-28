@@ -143,7 +143,23 @@ StatusType iDroid::GetTopApp(int versionCode, int* appID) {
 }
 
 StatusType iDroid::GetAllAppsByDownloads(int versionCode, int** apps, int* numOfApps) {
+	if(!apps || !numOfApps || versionCode == 0) {
+		return INVALID_INPUT;
+	}
+	if(versionCode < 0) {
+		getAllApps(_appsByDLtree, apps, numOfApps);
+	} else {
+		List<Version>::Iterator it = _versions.find(Version(versionCode));
+		if(it == _versions.end()) {
+			return FAILURE;
+		}
+		getAllApps(it->_appsByDLtree, apps, numOfApps);
+	}
 	return SUCCESS;
+}
+
+void getAllApps(Tree<DataByDowns>& tree, int** apps, int* numOfApps) {
+
 }
 
 StatusType iDroid::UpdateDownloads(int groupBase, int multiplyFactor) {
