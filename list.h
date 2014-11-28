@@ -4,6 +4,7 @@
 
 #include <cassert>
 #include <cstddef> // for size_t
+#include <stdexcept>
 
 /**************
  * Class List *
@@ -169,7 +170,10 @@ void List<T>::insert(const T& val) {
 
 template<class T>
 const T& List<T>::getTail() {
-	return _tail->_data;
+	if(_tail) {
+		return _tail->_data;
+	}
+	throw std::runtime_error("Empty list");
 }
 
 template<class T>

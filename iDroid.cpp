@@ -6,7 +6,7 @@ iDroid::iDroid() : _versions(), _appsByIDtree(), _appsByDLtree(), _max() {
 
 StatusType iDroid::AddVersion(int versionCode) {
 	if ( versionCode <= 0 ) return INVALID_INPUT;
-	if ( versionCode <= _versions.getTail().getId() ) return FAILURE;
+	if ( !_versions.empty() && versionCode != _versions.getTail().getId()+1 ) return FAILURE;
 	_versions.insert(Version(versionCode));
 	return SUCCESS;
 }
@@ -207,7 +207,7 @@ bool operator >(const DataByID& data1, const DataByID& data2) {
 
 bool operator <(const DataByDowns& data1, const DataByDowns& data2) {
 	if (data1._downloads == data2._downloads) {
-		if (data1._appID < data2._appID)  {
+		if (data1._appID > data2._appID)  {
 			return true;
 		} else {
 			return false;
@@ -219,7 +219,7 @@ bool operator <(const DataByDowns& data1, const DataByDowns& data2) {
 
 bool operator >(const DataByDowns& data1, const DataByDowns& data2) {
 	if (data1._downloads == data2._downloads) {
-		if (data1._appID > data2._appID) {
+		if (data1._appID < data2._appID) {
 			return true;
 		} else {
 			return false;
