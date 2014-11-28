@@ -107,6 +107,15 @@ StatusType iDroid::IncreaseDownloads(int appID, int downloadIncrease) {
 }
 
 StatusType iDroid::UpgradeApplication(int appID) {
+	if ( appID <= 0 ) return INVALID_INPUT;
+	try {
+		DataByID appByID(appID);
+		Tree<DataByID>::Node* node = _appsByIDtree.find(appByID);
+		appByID = node->getData();
+
+	}  catch(Tree<DataByID>::ElementNotFound& e) {
+		return FAILURE;
+	}
 	return SUCCESS;
 }
 

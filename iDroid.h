@@ -8,7 +8,7 @@
 
 class DataByID {
 public:
-	DataByID() : _appID(0), _downloads(0), _versionCode(0) {}
+	DataByID() : _appID(0), _downloads(-1), _versionCode(0) {}
 	DataByID(const DataByID& data) : _appID(data._appID), _downloads(data._downloads), _versionCode(data._versionCode) {}
 //	DataByID(const DataByDowns& data) : _appID(data._appID), _downloads(data._downloads), _versionCode(data._versionCode) {}
 	DataByID(int id, int downloads=-1, int versionCode=-1) : _appID(id), _downloads(downloads), _versionCode(versionCode) {}
@@ -24,7 +24,7 @@ private:
 
 class DataByDowns {
 public:
-	DataByDowns() : _appID(0), _downloads(0), _versionCode(0) {}
+	DataByDowns() : _appID(0), _downloads(-1), _versionCode(0) {}
 	DataByDowns(int id, int downloads, int versionCode) : _appID(id), _downloads(downloads), _versionCode(versionCode) {}
 	DataByDowns(const DataByDowns& data) : _appID(data._appID), _downloads(data._downloads), _versionCode(data._versionCode) {}
 	DataByDowns(const DataByID& data) : _appID(data._appID), _downloads(data._downloads), _versionCode(data._versionCode) {}
