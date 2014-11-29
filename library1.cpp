@@ -11,42 +11,74 @@ void* Init() {
 
 StatusType AddVersion(void *DS, int versionCode) {
 	CHECK_NULL(DS);
-	return ((iDroid*)DS)-> AddVersion(versionCode);
+	try {
+		return ((iDroid*)DS)-> AddVersion(versionCode);
+	} catch(std::bad_alloc& e) {
+		return ALLOCATION_ERROR;
+	}
 }
 
 StatusType AddApplication(void *DS, int appID, int versionCode, int downloadCount) {
 	CHECK_NULL(DS);
-	return ((iDroid*)DS)-> AddApplication(appID, versionCode, downloadCount);
+	try {
+		return ((iDroid*)DS)-> AddApplication(appID, versionCode, downloadCount);
+	} catch(std::bad_alloc& e) {
+		return ALLOCATION_ERROR;
+	}
 }
 
 StatusType RemoveApplication(void *DS, int appID) {
 	CHECK_NULL(DS);
-	return ((iDroid*)DS)-> RemoveApplication(appID);
+	try {
+		return ((iDroid*)DS)-> RemoveApplication(appID);
+	} catch(std::bad_alloc& e) {
+		return ALLOCATION_ERROR;
+	}
 }
 
 StatusType IncreaseDownloads(void *DS, int appID, int downloadIncrease) {
 	CHECK_NULL(DS);
-	return ((iDroid*)DS)-> IncreaseDownloads(appID, downloadIncrease);
+	try {
+		return ((iDroid*)DS)-> IncreaseDownloads(appID, downloadIncrease);
+	} catch(std::bad_alloc& e) {
+		return ALLOCATION_ERROR;
+	}
 }
 
 StatusType UpgradeApplication(void *DS, int appID) {
 	CHECK_NULL(DS);
-	return ((iDroid*)DS)-> UpgradeApplication(appID);
+	try {
+		return ((iDroid*)DS)-> UpgradeApplication(appID);
+	} catch(std::bad_alloc& e) {
+		return ALLOCATION_ERROR;
+	}
 }
 
 StatusType GetTopApp(void *DS, int versionCode, int *appID) {
 	CHECK_NULL(DS);
-	return ((iDroid*)DS)-> GetTopApp(versionCode, appID);
+	try {
+		return ((iDroid*)DS)-> GetTopApp(versionCode, appID);
+	} catch(std::bad_alloc& e) {
+		return ALLOCATION_ERROR;
+	}
 }
 
 StatusType GetAllAppsByDownloads(void *DS, int versionCode, int **apps, int *numOfApps) {
 	CHECK_NULL(DS);
-	return ((iDroid*)DS)-> GetAllAppsByDownloads(versionCode, apps, numOfApps);
+	try {
+		return ((iDroid*)DS)-> GetAllAppsByDownloads(versionCode, apps, numOfApps);
+	} catch(std::bad_alloc& e) {
+		return ALLOCATION_ERROR;
+	}
 }
 
 StatusType UpdateDownloads(void *DS, int groupBase, int multiplyFactor) {
 	CHECK_NULL(DS);
-	return ((iDroid*)DS)-> UpdateDownloads(groupBase, multiplyFactor);
+	try {
+		return ((iDroid*)DS)-> UpdateDownloads(groupBase, multiplyFactor);
+	} catch(std::bad_alloc& e) {
+		return ALLOCATION_ERROR;
+	}
 }
 
 void Quit(void** DS) {
