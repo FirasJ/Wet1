@@ -17,6 +17,7 @@ public:
 	friend bool operator >(const DataByID& data1, const DataByID& data2);
 	friend class iDroid;
 	friend class DataByDowns;
+	friend class UpdateDL;
 private:
 	int _appID, _versionCode, _downloads;
 };
@@ -38,6 +39,7 @@ public:
 
 	friend class iDroid;
 	friend class DataByID;
+	friend class PredicateTree;
 private:
 	int _appID, _versionCode, _downloads;
 };

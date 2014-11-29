@@ -44,13 +44,13 @@ private:
 	size_t _size;
 
 	template<class Function>
-	void subPreOrder(const Node* node, Function& function);
+	void subPreOrder(Node* node, Function& function);
 
 	template<class Function>
-	void subPostOrder(const Node* node, Function& function);
+	void subPostOrder(Node* node, Function& function);
 
 	template<class Function>
-	void subInOrder(const Node* node, Function& function) const;
+	void subInOrder(Node* node, Function& function) const;
 
 	void rotateLL(Node* node);
 
@@ -321,7 +321,7 @@ void Tree<T>::inOrder(Function& function) const {
 
 template<class T>
 template<class Function>
-void Tree<T>::subPreOrder(const Node* node, Function& function) {\
+void Tree<T>::subPreOrder(Node* node, Function& function) {\
     if(node) {
     	function(node->_data);
         if(node->_left) subPreOrder(node->_left, function);
@@ -331,7 +331,7 @@ void Tree<T>::subPreOrder(const Node* node, Function& function) {\
 
 template<class T>
 template<class Function>
-void Tree<T>::subPostOrder(const Node* node, Function& function) {
+void Tree<T>::subPostOrder(Node* node, Function& function) {
     if(node) {
         if(node->_left) subPostOrder(node->_left, function);
         if(node->_right) subPostOrder(node->_right, function);
@@ -341,7 +341,7 @@ void Tree<T>::subPostOrder(const Node* node, Function& function) {
 
 template<class T>
 template<class Function>
-void Tree<T>::subInOrder(const Node* node, Function& function) const {
+void Tree<T>::subInOrder(Node* node, Function& function) const {
     if(node) {
         if(node->_left) subInOrder(node->_left, function);
         function(node->_data);

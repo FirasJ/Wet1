@@ -189,7 +189,87 @@ StatusType iDroid::getAllApps(const Tree<DataByDowns>& tree, int** apps, int* nu
 	return SUCCESS;
 }
 
+void mergeLists(const List<DataByDowns>& list1, const List<DataByDowns>& list2, List<DataByDowns>& newList) {
+	List<DataByDowns>::Iterator it1 = list1.begin();
+	List<DataByDowns>::Iterator it2 = list2.begin();
+	while ( it1 != list1.end() || it2 != list2.end() ) {
+		if(*it1 < *it2) {
+			newList.insert(*it1);
+			++it1;
+		} else {
+			newList.insert(*it2);
+			++it2;
+		}
+	}
+	if( it1 == list1.end() ) {
+		while( it2 != list2.end() ) {
+			newList.insert(*it2);
+			++it2;
+		}
+		return;
+	}
+	if( it2 == list2.end() ) {
+		while( it1 != list1.end() ) {
+			newList.insert(*it1);
+			++it1;
+		}
+		return;
+	}
+}
+
+class FillTree {
+public:
+	FillTree(const List<DataByDowns> list) : _current(list.begin()) {}
+	void operator()(DataByDowns& data) {
+		data = *_current;
+		++_current;
+	}
+private:
+	List<DataByDowns>::Iterator _current;
+
+};
+
+class UpdateDL {
+public:
+	UpdateDL(int groupBase, int multiplyFactor) : _groupBase(groupBase), _multiplyFactor(multiplyFactor) {}
+	void operator()(DataByID& data) const {
+		if( data._appID%_groupBase == 0 ) {
+			data._downloads *= _multiplyFactor;
+		}
+	}
+private:
+	int _groupBase, _multiplyFactor;
+};
+
+class PredicateTree {
+public:
+	PredicateTree(List<DataByDowns>* belongs, List<DataByDowns>* doesntBelong, int groupBase, int multiplyFactor) :	_belongs(belongs),
+																													_doesntBelong(doesntBelong),
+																													_groupBase(groupBase),
+																													_multiplyFactor(multiplyFactor) {}
+	void operator()(DataByDowns& data) {
+		if( data._appID%_groupBase == 0 ) {
+			data._downloads *= _multiplyFactor;
+			_belongs->insert(data);
+		} else {
+			_doesntBelong->insert(data);
+		}
+	}
+private:
+	List<DataByDowns> *_belongs, *_doesntBelong;
+	int _groupBase, _multiplyFactor;
+};
+
 StatusType iDroid::UpdateDownloads(int groupBase, int multiplyFactor) {
+	if ( groupBase < 1 || multiplyFactor <= 0 ) return INVALID_INPUT;
+
+	UpdateDL updateDL(groupBase, multiplyFactor);
+	_appsByIDtree.inOrder(updateDL);
+	List<DataByDowns> list1(), list2(), allElements();
+	PredicateTree prediacteTree(&list1, &list2, groupBase, multiplyFactor);
+	_appsByDLtree.inOrder(prediacteTree);
+
+
 	return SUCCESS;
 }
 
