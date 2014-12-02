@@ -4,28 +4,28 @@
 #include <stdlib.h>
 #include <cassert>
 
-//#include <algorithm>
-
 template<class T>
 class Tree {
 public:
 
-	class TreeIsEmpty {};
-	class ElementNotFound {};
-	class ElementAlreadyExists {};
+	/* Exceptions thrown by the tree */
+	class TreeIsEmpty : public std::exception {
+	};
+	class ElementNotFound : public std::exception {
+	};
+	class ElementAlreadyExists : public std::exception {
+	};
 
-	class Node;
-	friend class Node;
-
+	/*
+	 *
+	 */
 	Tree();
 
 	virtual ~Tree();
 
 	virtual void insert(const T& data);
 	virtual void remove(const T& data);
-	virtual Node* find(const T& data) const;
-	Node* getMax() const;
-	void clear(Node* node);
+
 	size_t size() const;
 
 	template<class Function>
@@ -37,6 +37,11 @@ public:
 	template<class Function>
 	void inOrder(Function& function) const;
 
+	class Node;
+	friend class Node;
+	virtual Node* find(const T& data) const;
+	Node* getMax() const;
+	void clear(Node* node);
 
 private:
 
@@ -80,24 +85,22 @@ private:
 
 };
 
-
 template<class T>
 class Tree<T>::Node {
 public:
-	friend class Tree<T>;
-	Node(const T& data) : 	_data(data),
-							_left(0),
-							_right(0),
-							_parent(0),
-							_height(0),
-							_balanceFactor(0)	{}
-	Node(const Node& node) : 	_data(node._data),
-								_left(node._left),
-								_right(node._right),
-								_parent(node._parent),
-								_height(node._height),
-								_balanceFactor(node._balanceFactor) {}
-	const T& getData() { return _data; }
+	friend class Tree<T> ;
+	Node(const T& data) :
+			_data(data), _left(0), _right(0), _parent(0), _height(0), _balanceFactor(
+					0) {
+	}
+	Node(const Node& node) :
+			_data(node._data), _left(node._left), _right(node._right), _parent(
+					node._parent), _height(node._height), _balanceFactor(
+					node._balanceFactor) {
+	}
+	const T& getData() {
+		return _data;
+	}
 private:
 	T _data;
 	Node *_left, *_right, *_parent;
@@ -106,15 +109,20 @@ private:
 };
 
 template<class T>
-Tree<T>::Tree() :	_root(0), _size(0) {}
+Tree<T>::Tree() :
+		_root(0), _size(0) {
+}
 
 template<class T>
 void Tree<T>::clear(Node* node) {
-	if(!node) return;
-    if(node->_left) clear(node->_left);
-    if(node->_right) clear(node->_right);
-    delete node;
-    --_size;
+	if (!node)
+		return;
+	if (node->_left)
+		clear(node->_left);
+	if (node->_right)
+		clear(node->_right);
+	delete node;
+	--_size;
 }
 
 template<class T>
@@ -127,25 +135,27 @@ void Tree<T>::insert(const T& data) {
 	Node* newNode = new Node(data);
 	try {
 		Node* parent = find(data);
-		if(parent->_data == data) {
+		if (parent->_data == data) {
 			throw ElementAlreadyExists();
 		}
 		++_size;
 		newNode->_parent = parent;
-		if(data < parent->_data) {
+		if (data < parent->_data) {
 			parent->_left = newNode;
 		} else {
 			parent->_right = newNode;
 		}
 		Node* tmpNode = newNode;
-		while(tmpNode != _root) {
+		while (tmpNode != _root) {
 			Node* son = tmpNode;
 			tmpNode = tmpNode->_parent;
 			updateBalanceFactor(tmpNode);
-			if(tmpNode->_height >= son->_height + 1) return;
-			if(tmpNode->_height >= son->_height + 1) return;
+			if (tmpNode->_height >= son->_height + 1)
+				return;
+			if (tmpNode->_height >= son->_height + 1)
+				return;
 			updateHeight(tmpNode);
-			if(abs(tmpNode->_balanceFactor) > 1) {
+			if (abs(tmpNode->_balanceFactor) > 1) {
 				rotate(tmpNode);
 				return;
 			}
@@ -160,10 +170,10 @@ void Tree<T>::insert(const T& data) {
 template<class T>
 typename Tree<T>::Node* Tree<T>::getMax() const {
 	Node* max = _root;
-	if(!max) {
+	if (!max) {
 		throw TreeIsEmpty();
 	}
-	while(max->_right) {
+	while (max->_right) {
 		max = max->_right;
 	}
 	return max;
@@ -175,30 +185,30 @@ inline size_t Tree<T>::size() const {
 }
 
 /*
-// this function assumes Node* next has a parent.
+ // this function assumes Node* next has a parent.
+ template<class T>
+ void Tree<T>::swapNodes(Node* node, Node* next) {
+ Node*& nextParent = parentSon(next);
+ Node*& nodeParent = parentSon(node);
+ nextParent = node;
+ if(nodeParent)
+ nodeParent = next;
+ else
+ _root = next;
+ Node* tmp = node->_parent;
+ node->_parent = next->_parent;
+ next->_parent = tmp;
+
+ std::swap(node->_balanceFactor, next->_balanceFactor);
+ std::swap(node->_height, next->_height);
+ std::swap(node->_left, next->_left);
+ std::swap(node->_right, next->_right);
+ }
+ */
+
 template<class T>
 void Tree<T>::swapNodes(Node* node, Node* next) {
-	Node*& nextParent = parentSon(next);
-	Node*& nodeParent = parentSon(node);
-	nextParent = node;
-	if(nodeParent)
-		nodeParent = next;
-	else
-		_root = next;
-	Node* tmp = node->_parent;
-	node->_parent = next->_parent;
-	next->_parent = tmp;
-
-	std::swap(node->_balanceFactor, next->_balanceFactor);
-	std::swap(node->_height, next->_height);
-	std::swap(node->_left, next->_left);
-	std::swap(node->_right, next->_right);
-}
-*/
-
-template<class T>
-void Tree<T>::swapNodes(Node* node, Node* next) {
-	T& t=node->_data;
+	T& t = node->_data;
 	node->_data = next->_data;
 	next->_data = t;
 }
@@ -213,15 +223,15 @@ void Tree<T>::remove(const T& data) {
 	if (node->_left && node->_right) { // 2 sons
 		Node* next = getFollowing(node);
 		swapNodes(node, next);
-		node=next;
+		node = next;
 	}
 
 	Tree<T>::Node *parent = removeOneSon(node);
 
-	while(parent != NULL) {
+	while (parent != NULL) {
 		updateHeight(parent);
 		updateBalanceFactor(parent);
-		if(abs(parent->_balanceFactor) > 1) {
+		if (abs(parent->_balanceFactor) > 1) {
 			rotate(parent);
 		}
 		parent = parent->_parent;
@@ -273,12 +283,11 @@ template<class T>
 typename Tree<T>::Node* Tree<T>::getFollowing(Node* node) {
 	assert(node && node->_right);
 	Node* tmp = node->_right;
-	while(tmp->_left) {
+	while (tmp->_left) {
 		tmp = tmp->_left;
 	}
 	return tmp;
 }
-
 
 template<class T>
 typename Tree<T>::Node* Tree<T>::findAux(Node* node, const T& data) const {
@@ -293,11 +302,12 @@ typename Tree<T>::Node* Tree<T>::findAux(Node* node, const T& data) const {
 
 template<class T>
 typename Tree<T>::Node* Tree<T>::find(const T& data) const {
-	if (!_root) throw TreeIsEmpty();
+	if (!_root)
+		throw TreeIsEmpty();
 	Node* node = findAux(_root, data);
-/*	if(node->_data != data) {
-		throw ElementNotFound();
-	} */
+	/*	if(node->_data != data) {
+	 throw ElementNotFound();
+	 } */
 	return node;
 }
 
@@ -322,37 +332,45 @@ void Tree<T>::inOrder(Function& function) const {
 template<class T>
 template<class Function>
 void Tree<T>::subPreOrder(Node* node, Function& function) const {
-    if(node) {
-    	function(node->_data);
-        if(node->_left) subPreOrder(node->_left, function);
-        if(node->_right) subPreOrder(node->_right, function);
-    }
+	if (node) {
+		function(node->_data);
+		if (node->_left)
+			subPreOrder(node->_left, function);
+		if (node->_right)
+			subPreOrder(node->_right, function);
+	}
 }
 
 template<class T>
 template<class Function>
 void Tree<T>::subPostOrder(Node* node, Function& function) const {
-    if(node) {
-        if(node->_left) subPostOrder(node->_left, function);
-        if(node->_right) subPostOrder(node->_right, function);
-        function(node->_data);
-    }
+	if (node) {
+		if (node->_left)
+			subPostOrder(node->_left, function);
+		if (node->_right)
+			subPostOrder(node->_right, function);
+		function(node->_data);
+	}
 }
 
 template<class T>
 template<class Function>
 void Tree<T>::subInOrder(Node* node, Function& function) const {
-    if(node) {
-        if(node->_left) subInOrder(node->_left, function);
-        function(node->_data);
-        if(node->_right) subInOrder(node->_right, function);
-    }
+	if (node) {
+		if (node->_left)
+			subInOrder(node->_left, function);
+		function(node->_data);
+		if (node->_right)
+			subInOrder(node->_right, function);
+	}
 }
 
 template<class T>
 void Tree<T>::rotateLL(Node* node) {
-	if(node->_parent) {
-		( node->_parent->_left == node ) ? node->_parent->_left = node->_left : node->_parent->_right = node->_left;
+	if (node->_parent) {
+		(node->_parent->_left == node) ?
+				node->_parent->_left = node->_left : node->_parent->_right =
+						node->_left;
 	} else {
 		_root = node->_left;
 	}
@@ -360,7 +378,7 @@ void Tree<T>::rotateLL(Node* node) {
 	node->_parent = node->_left;
 	Node* tmp = node->_left->_right;
 	node->_left->_right = node;
-	if(tmp)
+	if (tmp)
 		tmp->_parent = node;
 	node->_left = tmp;
 
@@ -373,8 +391,10 @@ void Tree<T>::rotateLL(Node* node) {
 
 template<class T>
 void Tree<T>::rotateRR(Node* node) {
-	if(node->_parent) {
-		( node->_parent->_left == node ) ? node->_parent->_left = node->_right : node->_parent->_right = node->_right;
+	if (node->_parent) {
+		(node->_parent->_left == node) ?
+				node->_parent->_left = node->_right : node->_parent->_right =
+						node->_right;
 	} else {
 		_root = node->_right;
 	}
@@ -382,7 +402,7 @@ void Tree<T>::rotateRR(Node* node) {
 	node->_parent = node->_right;
 	Node* tmp = node->_right->_left;
 	node->_right->_left = node;
-	if(tmp)
+	if (tmp)
 		tmp->_parent = node;
 	node->_right = tmp;
 
@@ -409,8 +429,8 @@ template<class T>
 void Tree<T>::rotate(Node* node) {
 	int left = node->_left ? node->_left->_balanceFactor : 0;
 	int right = node->_right ? node->_right->_balanceFactor : 0;
-	if(node->_balanceFactor == 2) {
-		if(left >= 0) {
+	if (node->_balanceFactor == 2) {
+		if (left >= 0) {
 			rotateLL(node);
 			return;
 		} else {
@@ -418,7 +438,7 @@ void Tree<T>::rotate(Node* node) {
 			return;
 		}
 	} else {
-		if(right <= 0) {
+		if (right <= 0) {
 			rotateRR(node);
 			return;
 		} else {
@@ -430,7 +450,8 @@ void Tree<T>::rotate(Node* node) {
 
 template<class T>
 void Tree<T>::updateBalanceFactor(Node* node) {
-	if(!node) return;
+	if (!node)
+		return;
 	int right = node->_right ? node->_right->_height : -1;
 	int left = node->_left ? node->_left->_height : -1;
 	node->_balanceFactor = left - right;
@@ -438,7 +459,8 @@ void Tree<T>::updateBalanceFactor(Node* node) {
 
 template<class T>
 void Tree<T>::updateHeight(Node* node) {
-	if(!node) return;
+	if (!node)
+		return;
 	int right = node->_right ? node->_right->_height : -1;
 	int left = node->_left ? node->_left->_height : -1;
 	node->_height = 1 + (left > right ? left : right);
@@ -447,11 +469,11 @@ void Tree<T>::updateHeight(Node* node) {
 template<class T>
 void Tree<T>::update(Node* leaf) {
 	Node* tmpNode = leaf;
-	while(tmpNode) {
+	while (tmpNode) {
 		updateHeight(tmpNode->_parent);
 		tmpNode = tmpNode->_parent;
 	}
-	while(tmpNode) {
+	while (tmpNode) {
 		updateBalanceFactor(tmpNode->_parent);
 		tmpNode = tmpNode->_parent;
 	}

@@ -1,7 +1,6 @@
 #ifndef LIST_H_
 #define LIST_H_
 
-
 #include <cassert>
 #include <cstddef> // for size_t
 #include <stdexcept>
@@ -12,31 +11,55 @@
 template<class T>
 class List {
 public:
+	/* Empty constructor: initializes an empty list of type T
+	 * Time complexity: O(1)
+	 */
 	List();
+	/* Copy constructor : uses new function to allocate new memory.
+	 * Time complexity: O(n)
+	 */
 	List(const List&);
+	/* assignment operator : uses new function to allocate new memory.
+	 * Time complexity: O(n)
+	 */
 	List& operator=(const List&);
+	/* destructor: deletes all of the data stored in the list.
+	 * Time complexity: O(n)
+	 */
 	~List();
-
-	/* Add an element to the end of the list */
+	/* Adds an element to the end of the list
+	 * allocates new memory and may throw
+	 * Time complexity: O(1)
+	 */
 	void insert(const T& val);
 
-	/* Returns the last element of the list */
+	/* Returns the last element of the list
+	 * Time complexity: O(1)
+	 */
 	const T& getTail();
-	
+	/* returns the size of the list
+	 * Time complexity: O(1)
+	 */
+	size_t size() const;
+	/* returns TRUE if list is empty and FALSE otherwise.
+	 * Time complexity: O(1)
+	 */
+	bool empty() const;
+	/* Iterator class declaration */
 	class Iterator;
 	Iterator begin() const;
 	Iterator end() const;
-
-	size_t size() const;
-	bool empty() const;
+	/* returns an iterator pointing to the object if found
+	 * and end() otherwise.
+	 * Time complexity: O(n)
+	 */
 	Iterator find(const T& val) const;
 
 private:
 	class Node;
-
-	Node* _head;
-	Node* _tail;
-	size_t _size;
+	Node* _head; // a pointer to the first object.
+	Node* _tail; // a pointer to the last object.
+	size_t _size; // contains the size of the list.
 };
 
 /********************
@@ -69,11 +92,16 @@ class List<T>::Iterator {
 	Iterator(const List<T>* list, int index);
 	friend class List<T> ;
 public:
+	// All functions are implemented in time complexity of O(1)
+
+	/* returns the object that the iterator points to */
 	T& operator*() const;
+	/* advances the iterator by one thus pointing to the next object in the list */
 	Iterator& operator++();
 	Iterator operator++(int);
 	bool operator==(const Iterator& it) const;
 	bool operator!=(const Iterator& it) const;
+	/* returns a pointer to the object */
 	T* operator->() const;
 };
 
@@ -170,7 +198,7 @@ void List<T>::insert(const T& val) {
 
 template<class T>
 const T& List<T>::getTail() {
-	if(_tail) {
+	if (_tail) {
 		return _tail->_data;
 	}
 	throw std::runtime_error("Empty list");
@@ -224,7 +252,7 @@ T& List<T>::Iterator::operator *() const {
 template<class T>
 typename List<T>::Iterator& List<T>::Iterator::operator ++() {
 	++_index;
-	if(_node != NULL)
+	if (_node != NULL)
 		_node = _node->_next;
 	return *this;
 }
@@ -233,8 +261,8 @@ template<class T>
 typename List<T>::Iterator List<T>::Iterator::operator ++(int) {
 	Iterator res = *this;
 	++_index;
-	if(_node != NULL)
-			_node = _node->_next;
+	if (_node != NULL)
+		_node = _node->_next;
 	return res;
 }
 
