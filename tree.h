@@ -29,10 +29,10 @@ public:
 	size_t size() const;
 
 	template<class Function>
-	void preOrder(Function& function);
+	void preOrder(Function& function) const;
 
 	template<class Function>
-	void postOrder(Function& function);
+	void postOrder(Function& function) const;
 
 	template<class Function>
 	void inOrder(Function& function) const;
@@ -44,10 +44,10 @@ private:
 	size_t _size;
 
 	template<class Function>
-	void subPreOrder(Node* node, Function& function);
+	void subPreOrder(Node* node, Function& function) const;
 
 	template<class Function>
-	void subPostOrder(Node* node, Function& function);
+	void subPostOrder(Node* node, Function& function) const;
 
 	template<class Function>
 	void subInOrder(Node* node, Function& function) const;
@@ -303,13 +303,13 @@ typename Tree<T>::Node* Tree<T>::find(const T& data) const {
 
 template<class T>
 template<class Function>
-void Tree<T>::preOrder(Function& function) {
+void Tree<T>::preOrder(Function& function) const {
 	subPreOrder(_root, function);
 }
 
 template<class T>
 template<class Function>
-void Tree<T>::postOrder(Function& function) {
+void Tree<T>::postOrder(Function& function) const {
 	subPostOrder(_root, function);
 }
 
@@ -321,7 +321,7 @@ void Tree<T>::inOrder(Function& function) const {
 
 template<class T>
 template<class Function>
-void Tree<T>::subPreOrder(Node* node, Function& function) {\
+void Tree<T>::subPreOrder(Node* node, Function& function) const {
     if(node) {
     	function(node->_data);
         if(node->_left) subPreOrder(node->_left, function);
@@ -331,7 +331,7 @@ void Tree<T>::subPreOrder(Node* node, Function& function) {\
 
 template<class T>
 template<class Function>
-void Tree<T>::subPostOrder(Node* node, Function& function) {
+void Tree<T>::subPostOrder(Node* node, Function& function) const {
     if(node) {
         if(node->_left) subPostOrder(node->_left, function);
         if(node->_right) subPostOrder(node->_right, function);

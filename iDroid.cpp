@@ -9,7 +9,7 @@ iDroid::iDroid() : _versions(), _appsByIDtree(), _appsByDLtree(), _max() {
 
 StatusType iDroid::AddVersion(int versionCode) {
 	if ( versionCode <= 0 ) return INVALID_INPUT;
-	if ( !_versions.empty() && versionCode != _versions.getTail().getId()+1 ) return FAILURE;
+	if ( !_versions.empty() && versionCode <= _versions.getTail().getId() ) return FAILURE;
 	_versions.insert(Version(versionCode));
 	return SUCCESS;
 }
@@ -109,22 +109,23 @@ StatusType iDroid::UpgradeApplication(int appID) {
 		Version version(node->getData()._versionCode);
 		List<Version>::Iterator it = _versions.find(version);
 
-		if ( ++it == _versions.end() ) return FAILURE;
+		if ( ++it == _versions.end() ) {
+			return FAILURE;
+		}
 		it = _versions.find(version);
-
-//		if(*it == _versions.getTail()) return FAILURE;
 
 		appByID = node->getData();
 		DataByDowns appByDowns(appByID);
 
 		StatusType status = RemoveApplication(appID);
 		if(status != SUCCESS) return status;
-		status = AddApplication(appID, it->_versionID +1 , appByID._downloads);
+		status = AddApplication(appID, (++it)->_versionID , appByID._downloads);
 		if(status != SUCCESS) return status;
 
 	}  catch(Tree<DataByID>::TreeIsEmpty& e) {
 		return FAILURE;
 	}  catch(Tree<DataByDowns>::TreeIsEmpty& e) {
+			std::cout << appID;
 		return FAILURE;
 	}
 	return SUCCESS;
@@ -135,9 +136,6 @@ StatusType iDroid::GetTopApp(int versionCode, int* appID) {
 	if(versionCode == 0 || !appID) {
 		return INVALID_INPUT;
 	} else if(versionCode < 0) {
-		/*if(_max._appID <= 0) { // empty
-			return SUCCESS;
-		}*/
 		*appID = _max._appID;
 		return SUCCESS;
 	}
