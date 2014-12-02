@@ -29,11 +29,7 @@ StatusType AddApplication(void *DS, int appID, int versionCode, int downloadCoun
 
 StatusType RemoveApplication(void *DS, int appID) {
 	CHECK_NULL(DS);
-	try {
-		return ((iDroid*)DS)-> RemoveApplication(appID);
-	} catch(std::bad_alloc& e) {
-		return ALLOCATION_ERROR;
-	}
+	return ((iDroid*)DS)-> RemoveApplication(appID);
 }
 
 StatusType IncreaseDownloads(void *DS, int appID, int downloadIncrease) {
@@ -56,20 +52,12 @@ StatusType UpgradeApplication(void *DS, int appID) {
 
 StatusType GetTopApp(void *DS, int versionCode, int *appID) {
 	CHECK_NULL(DS);
-	try {
-		return ((iDroid*)DS)-> GetTopApp(versionCode, appID);
-	} catch(std::bad_alloc& e) {
-		return ALLOCATION_ERROR;
-	}
+	return ((iDroid*)DS)-> GetTopApp(versionCode, appID);
 }
 
 StatusType GetAllAppsByDownloads(void *DS, int versionCode, int **apps, int *numOfApps) {
 	CHECK_NULL(DS);
-	try {
-		return ((iDroid*)DS)-> GetAllAppsByDownloads(versionCode, apps, numOfApps);
-	} catch(std::bad_alloc& e) {
-		return ALLOCATION_ERROR;
-	}
+	return ((iDroid*)DS)-> GetAllAppsByDownloads(versionCode, apps, numOfApps);
 }
 
 StatusType UpdateDownloads(void *DS, int groupBase, int multiplyFactor) {

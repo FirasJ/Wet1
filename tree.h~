@@ -46,41 +46,36 @@ public:
 	 * Time complexity : O(1)
 	 */
 	size_t size() const;
-	/* A template method that calls the Function on all the objects of the tree
-	 * using pre-order traversal
-	 * Time complexity : O(n)
+	/* a template function
+	 * Time complexity : O()
 	 */
 	template<class Function>
 	void preOrder(Function& function) const;
-	/* A template method that calls the Function on all the objects of the tree
-	 * using post-order traversal
-	 * Time complexity : O(n)
+	/*
+	 * Time complexity : O()
 	 */
 	template<class Function>
 	void postOrder(Function& function) const;
-	/* A template method that calls the Function on all the objects of the tree
-	 * using in-order traversal
-	 * Time complexity : O(n)
+	/*
+	 * Time complexity : O()
 	 */
 	template<class Function>
 	void inOrder(Function& function) const;
-	// An AVL Tree Node
+	/*
+	 * Time complexity : O()
+	 */
 	class Node;
 	friend class Node;
-	/* Searches for the passed @data in the tree and returns the Node that
-	 * contains it, or the parent-to-be in case the data was inserted to
-	 * the tree.
-	 * @throw TreeIsEmpty
-	 * Time complexity : O(log n)
+	/*
+	 * Time complexity : O()
 	 */
 	virtual Node* find(const T& data) const;
-	/* returns the maximum data of the tree.
-	 * @throw TreeIsEmpty
-	 * Time complexity : O(log n)
+	/*
+	 * Time complexity : O()
 	 */
 	Node* getMax() const;
-	/* deletes all the data stored in the tree.
-	 * Time complexity : O(n)
+	/*
+	 * Time complexity : O()
 	 */
 	void clear(Node* node);
 
@@ -89,57 +84,39 @@ private:
 	Node *_root; // stores a pointer to the root of the tree
 	size_t _size; // contains the number of objects in the tree
 
-	/* All non-recursive private functions are performed in time complexity of
-	 * O(1) unless stated otherwise.
-	 */
-
-	// a recursive helping function that traverses through the tree in pre-order
-	// and calls @Function on each object
 	template<class Function>
 	void subPreOrder(Node* node, Function& function) const;
-	// a recursive helping function that traverses through the tree in post-order
-	// and calls @Function on each object
+
 	template<class Function>
 	void subPostOrder(Node* node, Function& function) const;
-	// a recursive helping function that traverses through the tree in in-order
-	// and calls @Function on each object
+
 	template<class Function>
 	void subInOrder(Node* node, Function& function) const;
-	/* A helping function that handles all the rotations needed in order to
-	 * maintain a legal AVL tree.
-	 * This function calls one of the 4 rotation methods.
-	 * Each rotation is performed in time complexity of O(1).
-	 */
-	void rotate(Node* node);
-	// An utility function to left rotate subtree rooted with @node
+
 	void rotateLL(Node* node);
-	// An utility function to right rotate subtree rooted with @node
+
 	void rotateRR(Node* node);
-	// An utility function to left-right rotate subtree rooted with @node
+
 	void rotateLR(Node* node);
-	// An utility function to right-left rotate subtree rooted with @node
+
 	void rotateRL(Node* node);
-	// A helping function to update the balance factor of @node.
+
+	void rotate(Node* node);
+
 	void updateBalanceFactor(Node* node);
-	// A helping function to update the height of @node.
+
 	void updateHeight(Node* node);
-	// A helping function that updates the height and balance factor of all the
-	// nodes starting from @leaf all the way up to the root.
-	// Time complexity: O(n)
+
 	void update(Node* leaf);
-	// A recursive utility function to find @data starting from @node
+
 	Tree<T>::Node* findAux(Node* node, const T& data) const;
-	// An utility function to remove a @node that has no more than one son
-	// and maintain the correctness of the AVL tree
-	// returns the parent of the node
+
 	typename Tree<T>::Node* removeOneSon(Node* node);
-	// A helping function to return a reference to the field of the parent
-	// containing the node.
+
 	Node*& parentSon(Node* node);
-	// A helping function to return the following node of the passed @node.
-	// Time complexity : O(log n)
+
 	Node* getFollowing(Node* node);
-	// An utility function that swaps the data between two given nodes
+
 	void swapNodes(Node* node, Node* next);
 
 };
@@ -191,12 +168,12 @@ Tree<T>::~Tree() {
 
 template<class T>
 void Tree<T>::insert(const T& data) {
+	Node* newNode = new Node(data);
 	try {
 		Node* parent = find(data);
 		if (parent->_data == data) {
 			throw ElementAlreadyExists();
 		}
-		Node* newNode = new Node(data);
 		++_size;
 		newNode->_parent = parent;
 		if (data < parent->_data) {
@@ -220,7 +197,6 @@ void Tree<T>::insert(const T& data) {
 			}
 		}
 	} catch (TreeIsEmpty& e) {
-		Node* newNode = new Node(data);
 		_root = newNode;
 		++_size;
 	}
@@ -243,6 +219,28 @@ template<class T>
 inline size_t Tree<T>::size() const {
 	return _size;
 }
+
+/*
+ // this function assumes Node* next has a parent.
+ template<class T>
+ void Tree<T>::swapNodes(Node* node, Node* next) {
+ Node*& nextParent = parentSon(next);
+ Node*& nodeParent = parentSon(node);
+ nextParent = node;
+ if(nodeParent)
+ nodeParent = next;
+ else
+ _root = next;
+ Node* tmp = node->_parent;
+ node->_parent = next->_parent;
+ next->_parent = tmp;
+
+ std::swap(node->_balanceFactor, next->_balanceFactor);
+ std::swap(node->_height, next->_height);
+ std::swap(node->_left, next->_left);
+ std::swap(node->_right, next->_right);
+ }
+ */
 
 template<class T>
 void Tree<T>::swapNodes(Node* node, Node* next) {
@@ -343,6 +341,9 @@ typename Tree<T>::Node* Tree<T>::find(const T& data) const {
 	if (!_root)
 		throw TreeIsEmpty();
 	Node* node = findAux(_root, data);
+	/*	if(node->_data != data) {
+	 throw ElementNotFound();
+	 } */
 	return node;
 }
 
